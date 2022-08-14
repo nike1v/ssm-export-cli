@@ -15,6 +15,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _filePath, _parameters;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DotenvConverter = void 0;
+/* eslint-disable unicorn/no-reduce */
 const fs_1 = require("fs");
 class DotenvConverter {
     constructor(filePath, parameters) {
@@ -24,9 +25,11 @@ class DotenvConverter {
         __classPrivateFieldSet(this, _parameters, parameters);
     }
     async convert() {
+        const environment = fs_1.readFileSync(__classPrivateFieldGet(this, _filePath), 'utf-8').split('\n');
         const data = Object.keys(__classPrivateFieldGet(this, _parameters)).map((item) => `${item}=${__classPrivateFieldGet(this, _parameters)[item]}`);
-        const text = data.join('\n');
-        fs_1.writeFileSync(__classPrivateFieldGet(this, _filePath), text, 'utf8');
+        const result = [...data, ...environment.filter((x) => x && !data.includes(x))].join('\n');
+        // const text = data.join('\n');
+        fs_1.writeFileSync(__classPrivateFieldGet(this, _filePath), result, 'utf8');
     }
 }
 exports.DotenvConverter = DotenvConverter;
